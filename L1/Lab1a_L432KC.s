@@ -23,43 +23,23 @@ LOOP:
 LDR R5, [R4]
 CMP R5, #13 //check for exit code
 BEQ EXIT
-BNE VALIDATE102 //if exit code was not read, check that the value is in range
+BNE VALIDATE //if exit code was not read, check that the value is in range
 
 //Checking upper limit of letters
-VALIDATE102:
+VALIDATE:
 CMP R5, #102 //compare to decimal 102
 BGT ERROR
-BLT VALIDATE97
-
-//Lower limit of letters
-VALIDATE97:
-CMP R5, #97 //check if value is less than 65
+CMP R5, #97
 BGE TO_UPPER
-BLT VALIDATE70
-
-//Upper limit of upper case digits
-VALIDATE70:
 CMP R5, #70
-BGT ERROR //check next upper limit for lower case letters
-BLT VALIDATE65
-
-//checking lower limit of lower case digits
-VALIDATE65:
+BGT ERROR
 CMP R5, #65
-BGE LETTER_TO_HEX //conver to hex digit if were greater than or equal to 65
-BLT VALIDATE57
-
-//Upper limit of digits
-VALIDATE57:
-CMP R5, #57 //check if value is less than 57
-BGT ERROR //branch to check lower bound if were under 57
-BLT VALIDATE48 //branch to check next upper bound if were too big
-
-//Lower limit of digits
-VALIDATE48: //check that value is greater than 48
+BGE LETTER_TO_HEX
+CMP R5, #57
+BGT ERROR
 CMP R5, #48
-BGE DIGIT_TO_HEX //greater than or equal to 48 means its a decimal digit
-BLT ERROR //if less than 48, its not a valid hex digit
+BGE DIGIT_TO_HEX
+BLT ERROR
 
 TO_UPPER:
 SUB R5, R5, #32
