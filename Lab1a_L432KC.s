@@ -12,7 +12,7 @@ PUSH {lr}
 
 //Defining labels for the dedicated memory locations
 .EQU dataStart, 0x20001000 //start of data to read
-.EQU writtenDataStart, 0x20003000 //start of writing addresses
+.EQU writtenDataStart, 0x20002000 //start of writing addresses
 
 //loading memory locations into registers for read/write 
 LDR R4, =dataStart
@@ -21,84 +21,77 @@ LDR R6, =writtenDataStart
 //Loop through program until exit code is read
 LOOP:
 LDR R5, [R4]
-CMP R4, 0x0D
-BEQ EXIT //exit loop when exit code is read
-B VALIDATE57 //if exit code was not read, check that the value is in range
-
-// if not convert the character to the appropriate value
-//write to memory and increment mem counter
+CMP R5, #13 //check for exit code
+BEQ EXIT
+BNE VALIDATE102 //if exit code was not read, check that the value is in range
 
 //Checking upper limit of letters
-
 VALIDATE102:
 CMP R5, #102 //compare to decimal 102
 BGT ERROR
-B VALIDATE97
+BLT VALIDATE97
 
 //Lower limit of letters
 VALIDATE97:
-CMP R5, #0X61 //check if value is less than 65
+CMP R5, #97 //check if value is less than 65
+BGE TO_UPPER
 BLT VALIDATE70
-B TO_UPPER
+
+//Upper limit of upper case digits
+VALIDATE70:
+CMP R5, #70
+BGT ERROR //check next upper limit for lower case letters
+BLT VALIDATE65
+
+//checking lower limit of lower case digits
+VALIDATE65:
+CMP R5, #65
+BGE LETTER_TO_HEX //conver to hex digit if were greater than or equal to 65
+BLT VALIDATE57
+
+//Upper limit of digits
+VALIDATE57:
+CMP R5, #57 //check if value is less than 57
+BGT ERROR //branch to check lower bound if were under 57
+BLT VALIDATE48 //branch to check next upper bound if were too big
+
+//Lower limit of digits
+VALIDATE48: //check that value is greater than 48
+CMP R5, #48
+BGE DIGIT_TO_HEX //greater than or equal to 48 means its a decimal digit
+BLT ERROR //if less than 48, its not a valid hex digit
 
 TO_UPPER:
 SUB R5, R5, #32
 B LETTER_TO_HEX
 
-VALIDATE65:
-CMP R5, #65
-BGE LETTER_TO_HEX
-B ERROR
-
-VALIDATE70:
-CMP R5, #70
-BGT ERROR
-B VALIDATE65
-
+//convert from an ascii digit between 65 and 70 to a digit between 10 and 15
 LETTER_TO_HEX:
-SUB R5, R5, #0X37 //subtract decimal 55 from values that represent letters
+SUB R5, R5, #55 //subtract decimal 55 from values that represent letters
 B WRITEMEM
 
-//Upper limit of digits
-VALIDATE57:
-CMP R5, #0X39 //check if value is less than 57
-BGT ERROR
-B VALIDATE48
-
-//Lower limit of digits
-VALIDATE48: //check that value is greater than 48
-CMP R5, #48
-BGE DIGIT_TO_HEX
-BLT ERROR
-B VALIDATE102
-
+//convert from ascii 48-57 to a digit from 0-9
 DIGIT_TO_HEX:
 SUB R5, R5, #48
 B WRITEMEM
 
+//procedure to write words into memory
 WRITEMEM:
-STR R5, [R6] //store R5 in memory and shift index by 4
-ADD R6, #4
-ADD R4, R4, #0X04
+STR R5, [R6], +#4 //store R5 in memory
+ADD R6, #4 //shift writing index by 4
+ADD R4, R4, #4 //shift reading index by 4
 B LOOP
 
+//subroutine writing error codes into memory
 ERROR:
 MOV R5, #-1 //replace register value with -1 if (converted to upper) it was greater than 70
-STR R5, [R6], +0x04
-ADD R4, R4, #0X04
+STR R5, [R6], +#4
+ADD R4, R4, #4
 B LOOP
 
 //Exit sequence
 EXIT:
 POP {PC}
-
-/*
 .data
-exitCode:
-.LONG 0x0D
-errorCode:
-.LONG 0xFFFFFFFF
-*/
-
 /*--------------------------------------*/
 
