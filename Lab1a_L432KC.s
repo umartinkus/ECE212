@@ -77,15 +77,16 @@ B WRITEMEM
 
 //procedure to write words into memory
 WRITEMEM:
-STR R5, [R6], +#4 //store R5 in memory
-ADD R6, #4 //shift writing index by 4
+STR R5, [R6]
+ADD R6, R6, #4 //store R5 in memory
 ADD R4, R4, #4 //shift reading index by 4
 B LOOP
 
 //subroutine writing error codes into memory
 ERROR:
 MOV R5, #-1 //replace register value with -1 if (converted to upper) it was greater than 70
-STR R5, [R6], +#4
+STR R5, [R6]
+ADD R6, R6, #4
 ADD R4, R4, #4
 B LOOP
 
