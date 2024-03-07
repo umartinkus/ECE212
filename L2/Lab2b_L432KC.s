@@ -40,7 +40,7 @@ STR R7,[R1]//place the LSL value into buffer memory location
 LDR R5, [R3], #4 //load the first y data point
 LDR R7, [R3] //load the second y data point
 ADD R7, R7, R5 //calculate sum and store in register 7; will be used for trapezoid area
-LDR R5, [R1] //pull delta x LSL value from memory --> can maybe remove the memory here, register will do
+LDR R5, [R1] //pull delta x LSL value from memory
 LSL R7, R5 // multiplying delta(x) by (y1+y2)
 ADD R4, R4, R7 //add rectangular areas to cumulative sum
 ADD R6,#1 //increment counter by 1
