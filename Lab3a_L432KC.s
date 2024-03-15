@@ -35,37 +35,37 @@ bl value //print user entered value to the terminal for verification
 bl cr
 cmp r4,#3 //compare user entered value to decimal 3
 blt low //if it is less than 3, throw an error message
-cmp r4,#10
-bgt high
+cmp r4,#10 //check if the user entered value is greater than 10
+bgt high //if it is greater than 10, throw an error message
 b continue
 
-low:
+low: //this section of code just prints an error message and then gets a value and checks if its greater than 10 or less than 3. 
 ldr r0,=Prompt3
 bl printf
 bl cr
-bl getstring
+bl getstring //get user val from terminal
 mov r4,r0
-bl value
+bl value //print it for verification
 bl cr
 cmp r4,#3
-blt low
+blt low //go back to top if its less than 3
 cmp r4,#10
-bgt high
-b continue
+bgt high //branch to error message if its greater than 10
+b continue //if the value is good, go to the continue section of code
 
 high:
-ldr r0,=Prompt4
+ldr r0,=Prompt4 //load error message
 bl printf
-bl cr
-bl getstring
+bl cr //print error message and start a new line
+bl getstring //get new value
 mov r4,r0
 bl value
 bl cr
-cmp r4,#3
-blt low
-cmp r4,#10
-bgt high
-b continue
+cmp r4,#3 //check if it is too small
+blt low //throw error if its too small
+cmp r4,#10 //check if its too big
+bgt high //go back to top of this section if its too big
+b continue //if a good number is entered, go to the continue section of code
 
 continue:
 mov r6,r4
