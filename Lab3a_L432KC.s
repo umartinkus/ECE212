@@ -10,8 +10,8 @@
 .text
 Welcomeprompt:
 /*-----------------Students write their subroutine here--------------------*/
-PUSH {lr}
-PUSH {r0}
+PUSH {lr} //save location of PC before entering Welcomee subroutine
+PUSH {r0} //saving values held in R0-R7
 PUSH {r1}
 PUSH {r2}
 PUSH {r3}
@@ -19,22 +19,22 @@ PUSH {r4}
 PUSH {r5}
 PUSH {r6}
 PUSH {r7}
-.equ memstart, 0x20001000
-ldr r5,=memstart
+.equ memstart, 0x20001000 //memory location for storing the user entered values
+ldr r5,=memstart //loading memory location for storing values into r5
 
 bl cr
-ldr r0,=WelcomeString
+ldr r0,=WelcomeString //R0 holds value to print with printf subroutine/function 
 bl printf
 bl cr
-ldr r0,=Prompt
+ldr r0,=Prompt //same as line 26
 bl printf
 bl cr
-bl getstring
-mov r4,r0
-bl value
+bl getstring //get user entered value from terminal and store in r0
+mov r4,r0 //move user entered value into r4
+bl value //print user entered value to the terminal for verification
 bl cr
-cmp r4,#3
-blt low
+cmp r4,#3 //compare user entered value to decimal 3
+blt low //if it is less than 3, throw an error message
 cmp r4,#10
 bgt high
 b continue
