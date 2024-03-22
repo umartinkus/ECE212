@@ -31,8 +31,8 @@ PUSH {R6} //Number of values
 LDR R0, =Hello //load R4 with first string
 bl printfbl cr //print hello string and start a new line
 MOV R7, #0 //set counter to zero
-LDR R5, [SP, #24] //load R5 with address of array
-LDR R6, [SP, #20] //load R6 with number of vals
+LDR R5, [SP, #28] //load R5 with address of array
+LDR R6, [SP, #24] //load R6 with number of vals
 
 LDR R0, =Entries
 bl printf
