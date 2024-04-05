@@ -36,6 +36,7 @@ bl cr
 B MAIN
 
 EXIT:
+bl printf
 STR R0, [SP, #8]
 POP {R0}
 POP {LR}
