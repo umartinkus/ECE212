@@ -36,9 +36,9 @@ mov r1, #7 //column
 mov r2, #0 //row
 mov r3, #0 //delay
 mov r5, #0 //address offset
-mov r0, #0
+mov r0, #0 //set blank register to zero
 add r6, #1
-cmp r6, #100
+cmp r6, #100 //number of times to loop through pattern
 bne Innerloop
 b END
 
