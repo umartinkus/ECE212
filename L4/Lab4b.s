@@ -17,35 +17,8 @@ PUSH {R0}
 LDR R0, [SP, #8]
 PUSH {R0} //put ascii char back on stack in front of LR
 bl convert1
+STR R0, [SP, #12] //store pattern in stack location that originally had ascii char
 POP {R0}
-STR R0, [SP, #8] //store pattern in stack location that originally had ascii char
+POP {R0}
 POP {PC}
 /*-------Students write their code here ------------*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*-------Code ends here ---------------------*/
-
-/*-----------------DO NOT MODIFY--------*/
-.data
-/*--------------------------------------*/
